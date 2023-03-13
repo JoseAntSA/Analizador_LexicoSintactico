@@ -1,0 +1,411 @@
+package Codigo;
+
+import java_cup.runtime.Symbol;
+
+parser code
+{:
+    private Symbol s;
+    
+    public void syntax_error(Symbol s){
+        this.s = s;
+    }
+
+    public Symbol getS(){
+        return this.s;
+}
+:};
+
+terminal Tabulacion, Oper_Arit, Oper_Log, Oper_Rel, Oper_Bol, Oper_Asig, Oper_AsigArit,
+    Par_Izq, Par_Der, Cor_Izq, Cor_Der, Punt_Coma, Dos_Punt, Coma, Punto, Comilla,
+    Pal_await, Pal_else, Pal_import, Pal_pass, Pal_None, Pal_break, Pal_except, Pal_in,
+    Pal_raise, Pal_class, Pal_finally, Pal_is, Pal_return, Pal_continue, Pal_for,
+    Pal_lambda, Pal_try, Pal_as, Pal_def, Pal_from, Pal_nonlocal, Pal_while, Pal_assert,
+    Pal_del, Pal_global, Pal_not, Pal_with, Pal_async, Pal_elif, Pal_if, Pal_yield,
+    Pal_print, Variable, Ident, Num_Int, Num_Float, Num_Imag, String, ERROR;
+
+non terminal INICIO, SENTENCIA, DECLARACION, EXPRESION, SENTENCIA_BOOLEANA, ARREGLO, DAT_ARR,
+    IF, ELIF, ELSE, FOR, WHILE, IMPORT, IMPORT_AUM, DEFINE, RETURN, METODOS, ARGUMENTOS, AUMENTOS,
+    DEL, CLASS, PRINT, VARIABLES, TRY, EXCEPT, IN_NOTIN, IS, ASSERT, WITH, LAMBDA, FINALLY, AWAIT,
+    GLOBAL, NONLOCAL, RAISE, YIELD;
+
+start with INICIO;
+
+INICIO ::= 
+    SENTENCIA
+;
+
+
+SENTENCIA ::=
+    SENTENCIA Tabulacion |
+    Tabulacion |
+    SENTENCIA Punt_Coma |
+    Punt_Coma |
+    SENTENCIA Pal_pass |
+    Pal_pass |
+    SENTENCIA Pal_break |
+    Pal_break |
+    SENTENCIA Pal_continue |
+    Pal_continue |
+    SENTENCIA DECLARACION |
+    DECLARACION |
+    SENTENCIA AUMENTOS |
+    AUMENTOS |
+    SENTENCIA IF |
+    IF |
+    SENTENCIA ELIF |
+    ELIF |
+    SENTENCIA FOR |
+    FOR |
+    SENTENCIA WHILE |
+    WHILE |
+    SENTENCIA IMPORT |
+    IMPORT |
+    SENTENCIA DEFINE |
+    DEFINE |
+    SENTENCIA RETURN |
+    RETURN |
+    SENTENCIA METODOS |
+    METODOS |
+    SENTENCIA DEL |
+    DEL |
+    SENTENCIA CLASS |
+    CLASS |
+    SENTENCIA PRINT |
+    PRINT |
+    SENTENCIA VARIABLES |
+    VARIABLES |
+    SENTENCIA TRY |
+    TRY |
+    SENTENCIA EXCEPT |
+    EXCEPT |
+    SENTENCIA ELSE |
+    ELSE |
+    SENTENCIA FINALLY |
+    FINALLY |
+    SENTENCIA IS |
+    IS |
+    SENTENCIA ASSERT |
+    ASSERT |
+    SENTENCIA WITH |
+    WITH |
+    SENTENCIA LAMBDA |
+    LAMBDA |
+    SENTENCIA AWAIT |
+    AWAIT |
+    SENTENCIA GLOBAL |
+    GLOBAL |
+    SENTENCIA NONLOCAL |
+    NONLOCAL |
+    SENTENCIA RAISE |
+    RAISE |
+    SENTENCIA YIELD |
+    YIELD
+;
+
+DECLARACION ::= 
+    Ident |
+    Ident Oper_Asig Num_Int |
+    Ident Oper_Asig Num_Float |
+    Ident Oper_Asig Num_Imag |
+    Ident Oper_Asig String |
+    Ident Oper_Asig Ident |
+    Ident Oper_Asig Pal_None |
+    Ident Oper_Asig Num_Int EXPRESION |
+    Ident Oper_Asig Num_Float EXPRESION |
+    Ident Oper_Asig Num_Imag EXPRESION |
+    Ident Oper_Asig String EXPRESION |
+    Ident Oper_Asig Ident EXPRESION |
+    Ident Oper_Asig ARREGLO |
+    Ident Oper_Asig METODOS |
+    Ident Oper_Asig Variable Par_Izq Ident Par_Izq String Par_Der Par_Der
+;
+
+AUMENTOS ::= 
+    Ident Oper_AsigArit Num_Int |
+    Ident Oper_AsigArit Num_Float |
+    Ident Oper_AsigArit Num_Imag |
+    Ident Oper_AsigArit String |
+    Ident Oper_AsigArit Ident
+;
+
+EXPRESION ::= 
+    Oper_Arit Num_Int |
+    Oper_Arit Num_Float |
+    Oper_Arit Num_Imag |
+    Oper_Arit String |
+    Oper_Arit Ident |
+    EXPRESION Oper_Arit Num_Int |
+    EXPRESION Oper_Arit Num_Float |
+    EXPRESION Oper_Arit Num_Imag |
+    EXPRESION Oper_Arit String |
+    EXPRESION Oper_Arit Ident
+;
+
+ARREGLO ::=
+    Cor_Izq Cor_Der |
+    Cor_Izq DAT_ARR Cor_Der
+;
+
+DAT_ARR ::=
+    Num_Int |
+    Num_Float |
+    Num_Imag |
+    String |
+    Pal_None |
+    Coma Num_Int |
+    Coma Num_Float |
+    Coma Num_Imag |
+    Coma String |
+    Coma Pal_None |
+    DAT_ARR Num_Int |
+    DAT_ARR Num_Float |
+    DAT_ARR Num_Imag |
+    DAT_ARR String |
+    DAT_ARR Pal_None |
+    DAT_ARR Coma Num_Int |
+    DAT_ARR Coma Num_Float |
+    DAT_ARR Coma Num_Imag |
+    DAT_ARR Coma String |
+    DAT_ARR Coma Pal_None
+;
+
+IF ::= 
+    Pal_if Par_Izq SENTENCIA_BOOLEANA Par_Der Dos_Punt |
+    Pal_if SENTENCIA_BOOLEANA Dos_Punt
+;
+
+ELIF ::= 
+    Pal_elif Par_Izq SENTENCIA_BOOLEANA Par_Der Dos_Punt |
+    Pal_elif SENTENCIA_BOOLEANA Dos_Punt
+;
+
+FOR ::=
+    Pal_for Ident Pal_in Ident Dos_Punt |
+    Pal_for Ident Pal_in Num_Int Dos_Punt |
+    Pal_for Ident Pal_in Ident Par_Izq Num_Int Par_Der Dos_Punt |
+    Pal_for Ident Pal_in Ident Par_Izq Ident Par_Der Dos_Punt |
+    Pal_for Ident Pal_in Ident Par_Izq Num_Int Coma Num_Int Par_Der Dos_Punt |
+    Pal_for Ident Pal_in Ident Par_Izq Ident Coma Ident Par_Der Dos_Punt |
+    Pal_for Ident Pal_in Ident Par_Izq Num_Int Coma Ident Par_Der Dos_Punt |
+    Pal_for Ident Pal_in Ident Par_Izq Ident Coma Num_Int Par_Der Dos_Punt
+;
+
+WHILE ::= 
+    Pal_while Par_Izq SENTENCIA_BOOLEANA Par_Der Dos_Punt |
+    Pal_while SENTENCIA_BOOLEANA Dos_Punt
+;
+
+DEFINE ::= 
+    Pal_def Ident Par_Izq Par_Der Dos_Punt | 
+    Pal_def Ident Par_Izq ARGUMENTOS Par_Der Dos_Punt |
+    Pal_async Pal_def Ident Par_Izq Par_Der Dos_Punt | 
+    Pal_async Pal_def Ident Par_Izq ARGUMENTOS Par_Der Dos_Punt    
+;
+
+RETURN ::=
+    Pal_return Num_Int EXPRESION |
+    Pal_return Num_Float EXPRESION |
+    Pal_return Num_Imag EXPRESION |
+    Pal_return String EXPRESION |
+    Pal_return Ident EXPRESION
+;
+
+METODOS ::=
+    Ident Par_Izq Par_Der |
+    Ident Par_Izq ARGUMENTOS Par_Der |
+    Ident IMPORT_AUM Par_Izq Par_Der |
+    Ident IMPORT_AUM Par_Izq ARGUMENTOS Par_Der
+;
+
+IMPORT ::= 
+    Pal_import Ident |
+    Pal_import Ident Pal_as Ident |
+    Pal_import Ident IMPORT_AUM Pal_as Ident |
+    Pal_from Ident Pal_import Ident |
+    Pal_from Ident Pal_import Ident Pal_as Ident |
+    Pal_from Ident Pal_import Ident IMPORT_AUM Pal_as Ident
+
+;
+
+IMPORT_AUM ::=
+    Punto Ident |
+    IMPORT_AUM Punto Ident
+;
+
+ARGUMENTOS ::=
+    Num_Int |
+    Num_Float |
+    Num_Imag |
+    String |
+    Ident |
+    Pal_None |
+    Coma Num_Int |
+    Coma Num_Float |
+    Coma Num_Imag |
+    Coma String |
+    Coma Ident |
+    Coma Pal_None |
+    ARGUMENTOS Num_Int |
+    ARGUMENTOS Num_Float |
+    ARGUMENTOS Num_Imag |
+    ARGUMENTOS String |
+    ARGUMENTOS Ident |
+    ARGUMENTOS Pal_None |
+    ARGUMENTOS Coma Num_Int |
+    ARGUMENTOS Coma Num_Float |
+    ARGUMENTOS Coma Num_Imag |
+    ARGUMENTOS Coma String |
+    ARGUMENTOS Coma Ident |
+    ARGUMENTOS Coma Pal_None |
+    Num_Int EXPRESION |
+    Num_Float EXPRESION |
+    Num_Imag EXPRESION |
+    String EXPRESION |
+    Ident EXPRESION |
+    Pal_None EXPRESION |
+    Coma Num_Int EXPRESION |
+    Coma Num_Float EXPRESION |
+    Coma Num_Imag EXPRESION |
+    Coma String EXPRESION |
+    Coma Ident EXPRESION |
+    Coma Pal_None EXPRESION |
+    ARGUMENTOS Num_Int EXPRESION |
+    ARGUMENTOS Num_Float EXPRESION |
+    ARGUMENTOS Num_Imag EXPRESION |
+    ARGUMENTOS String EXPRESION |
+    ARGUMENTOS Ident EXPRESION |
+    ARGUMENTOS Pal_None EXPRESION |
+    ARGUMENTOS Coma Num_Int EXPRESION |
+    ARGUMENTOS Coma Num_Float EXPRESION |
+    ARGUMENTOS Coma Num_Imag EXPRESION |
+    ARGUMENTOS Coma String EXPRESION |
+    ARGUMENTOS Coma Ident EXPRESION |
+    ARGUMENTOS Coma Pal_None EXPRESION 
+;
+
+SENTENCIA_BOOLEANA ::= 
+    Oper_Bol |
+    IN_NOTIN |
+    IS |
+    Ident Oper_Rel Oper_Bol |
+    Ident Oper_Rel Num_Int |
+    Ident Oper_Rel Num_Float |
+    Ident Oper_Rel Num_Imag |
+    Ident Oper_Rel Ident |
+    Ident Oper_Rel Comilla Comilla |
+    Ident Oper_Rel Comilla Ident Comilla |
+    Num_Int Oper_Rel Ident |
+    Num_Float Oper_Rel Ident |
+    Num_Imag Oper_Rel Ident |
+    Comilla Comilla Oper_Rel Ident |
+    Comilla Ident Comilla Oper_Rel Ident |
+    SENTENCIA_BOOLEANA Oper_Log Oper_Bol |
+    SENTENCIA_BOOLEANA Oper_Log IN_NOTIN |
+    SENTENCIA_BOOLEANA Oper_Log IS |
+    SENTENCIA_BOOLEANA Oper_Log Ident Oper_Rel Oper_Bol |
+    SENTENCIA_BOOLEANA Oper_Log Ident Oper_Rel Num_Int |
+    SENTENCIA_BOOLEANA Oper_Log Ident Oper_Rel Num_Float |
+    SENTENCIA_BOOLEANA Oper_Log Ident Oper_Rel Num_Imag |
+    SENTENCIA_BOOLEANA Oper_Log Ident Oper_Rel Ident |
+    SENTENCIA_BOOLEANA Oper_Log Ident Oper_Rel Comilla Comilla |
+    SENTENCIA_BOOLEANA Oper_Log Ident Oper_Rel Comilla Ident Comilla |
+    SENTENCIA_BOOLEANA Oper_Log Num_Int Oper_Rel Ident |
+    SENTENCIA_BOOLEANA Oper_Log Num_Float Oper_Rel Ident |
+    SENTENCIA_BOOLEANA Oper_Log Num_Imag Oper_Rel Ident |
+    SENTENCIA_BOOLEANA Oper_Log Comilla Comilla Oper_Rel Ident |
+    SENTENCIA_BOOLEANA Oper_Log Comilla Ident Comilla Oper_Rel Ident |
+;
+
+DEL ::=
+    Pal_del Ident
+;
+
+CLASS ::=
+    Pal_class Ident Dos_Punt
+;
+
+PRINT ::=
+    Pal_print Par_Izq ARGUMENTOS Par_Der |
+    Pal_print Par_Izq IN_NOTIN Par_Der
+;
+
+VARIABLES ::=
+    Variable Par_Izq Ident Par_Der
+;
+
+TRY ::=
+    Pal_try Dos_Punt
+;
+
+EXCEPT ::=
+    Pal_except Ident Dos_Punt |
+    Pal_except Ident Pal_as Ident Dos_Punt
+;
+
+ELSE ::= 
+    Pal_else Dos_Punt
+;
+
+FINALLY ::=
+    Pal_finally Dos_Punt
+;
+
+IN_NOTIN ::=
+    Num_Int Pal_in Ident |
+    Num_Float Pal_in Ident |
+    Num_Imag Pal_in Ident |
+    String Pal_in Ident |
+    Ident Pal_in Ident |
+    Num_Int Pal_not Pal_in Ident |
+    Num_Float Pal_not Pal_in Ident |
+    Num_Imag Pal_not Pal_in Ident |
+    String Pal_not Pal_in Ident |
+    Ident Pal_not Pal_in Ident 
+;
+
+IS ::=
+    Ident Pal_is Ident |
+    Ident Pal_is Pal_not Ident
+;
+
+ASSERT ::=
+    Pal_assert Ident Oper_Rel Num_Int|
+    Pal_assert Ident Oper_Rel Num_Float|
+    Pal_assert Ident Oper_Rel Num_Imag|
+    Pal_assert Ident Oper_Rel String|
+    Pal_assert Ident Oper_Rel Ident
+;
+
+WITH ::=
+    Pal_with METODOS Pal_as Ident Dos_Punt
+;
+
+LAMBDA ::=
+    Pal_lambda Ident Dos_Punt Num_Int EXPRESION |
+    Pal_lambda Ident Dos_Punt Num_Float EXPRESION |
+    Pal_lambda Ident Dos_Punt Num_Imag EXPRESION |
+    Pal_lambda Ident Dos_Punt String EXPRESION |
+    Pal_lambda Ident Dos_Punt Ident EXPRESION
+;
+
+AWAIT ::=
+    Pal_await METODOS
+;
+
+GLOBAL ::=
+    Pal_global Ident
+;
+
+NONLOCAL ::=
+    Pal_nonlocal Ident
+;
+
+RAISE ::=
+    Pal_raise METODOS
+;
+
+YIELD ::=
+    Pal_yield Ident
+;
+
+
